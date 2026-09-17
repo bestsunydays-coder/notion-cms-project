@@ -5,6 +5,7 @@
 
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import SearchBar from '@/components/SearchBar';
 import PostCard from '@/components/PostCard';
@@ -130,25 +131,25 @@ async function CategoryFilter({ selectedCategory = '' }: { selectedCategory?: st
       </p>
       <div className="flex flex-wrap gap-2">
         {/* 전체 보기 버튼 */}
-        <a href="/">
+        <Link href="/">
           <Badge
             variant={!selectedCategory ? 'default' : 'outline'}
             className="cursor-pointer hover:shadow-md transition-shadow"
           >
             전체
           </Badge>
-        </a>
+        </Link>
 
         {/* 카테고리 버튼 */}
         {categories.map((category) => (
-          <a key={category.id} href={`/?category=${encodeURIComponent(category.name)}`}>
+          <Link key={category.id} href={`/?category=${encodeURIComponent(category.name)}`}>
             <Badge
               variant={selectedCategory === category.name ? 'default' : 'outline'}
               className="cursor-pointer hover:shadow-md transition-shadow"
             >
               {category.name} ({category.postCount})
             </Badge>
-          </a>
+          </Link>
         ))}
       </div>
     </div>
@@ -179,9 +180,9 @@ export default async function Home({ searchParams }: HomePageProps) {
       {/* 헤더 */}
       <header className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-sm flex justify-center w-full">
         <nav className="max-w-6xl w-full px-6 py-4 flex justify-between items-center">
-          <a href="/" className="font-bold text-lg hover:opacity-80 transition-opacity">
+          <Link href="/" className="font-bold text-lg hover:opacity-80 transition-opacity">
             Notion 여행 가이드
-          </a>
+          </Link>
           <ThemeToggle />
         </nav>
       </header>

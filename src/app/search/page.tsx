@@ -7,7 +7,6 @@
 
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import type { Metadata } from 'next';
 import Link from 'next/link';
 import { ThemeToggle } from '@/components/theme-toggle';
 import SearchBar from '@/components/SearchBar';
@@ -80,7 +79,7 @@ function SearchResults() {
           {query ? (
             <>
               <span className="font-semibold text-gray-900 dark:text-gray-50">
-                "{query}"
+                &quot;{query}&quot;
               </span>
               {' '}에 대한 검색 결과:
               <span className="font-semibold text-primary ml-2">

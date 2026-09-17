@@ -26,7 +26,7 @@ export default function Pagination({
     const pages: (number | string)[] = [];
     const maxPagesToShow = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    const endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
 
     // 끝 페이지가 전체 페이지보다 작으면 시작 페이지 조정
     if (endPage - startPage < maxPagesToShow - 1) {

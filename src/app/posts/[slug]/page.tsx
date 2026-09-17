@@ -59,8 +59,6 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     };
   }
 
-  const formattedDate = post.publishedDate ? formatDateLong(post.publishedDate) : '';
-
   return {
     title: `${post.title} | Notion 여행 가이드 블로그`,
     description: post.excerpt || '세계 여행 가이드와 여행 팁을 공유하는 블로그입니다.',

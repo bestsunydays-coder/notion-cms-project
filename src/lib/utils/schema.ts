@@ -3,7 +3,7 @@
  * JSON-LD 형식의 스키마를 생성하여 검색 엔진 최적화를 돕습니다.
  */
 
-import type { Post, Category } from '@/lib/types';
+import type { Post } from '@/lib/types';
 
 /**
  * 조직 스키마 생성
