@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import Image from 'next/image';
 import DOMPurify from 'dompurify';
 import type { NotionBlock } from '@/lib/types';
 
@@ -91,11 +92,16 @@ export default function NotionBlock({ block }: NotionBlockProps) {
       return (
         <figure className="my-6">
           {url && (
-            <img
-              src={url}
-              alt={caption}
-              className="w-full h-auto rounded-lg shadow-md"
-            />
+            <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
+              <Image
+                src={url}
+                alt={caption}
+                fill
+                className="rounded-lg shadow-md object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
+                priority={false}
+              />
+            </div>
           )}
           {caption && caption !== '이미지' && (
             <figcaption className="text-sm text-gray-600 dark:text-gray-400 mt-2 text-center">

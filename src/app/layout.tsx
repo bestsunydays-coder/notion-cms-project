@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AccessibilityProvider } from "@/components/AccessibilityProvider";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 import "@/styles/accessibility.css";
 
@@ -60,6 +61,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
+
+  // Canonical URL
+  alternates: {
+    canonical: 'https://notion-cms.example.com',
+  },
 };
 
 /**
@@ -92,6 +98,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="alternate" hrefLang="ko" href="https://notion-cms.example.com" />
       </head>
       <body className="min-h-screen bg-background text-foreground">
+        {/* Google Analytics */}
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID || ''} />
+
         <AccessibilityProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}

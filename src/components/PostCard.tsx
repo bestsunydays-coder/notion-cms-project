@@ -5,6 +5,7 @@
  */
 
 import Link from 'next/link';
+import Image from 'next/image';
 import type { Post } from '@/lib/types';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -36,10 +37,13 @@ export default function PostCard({ post }: PostCardProps) {
         {/* 썸네일 이미지 */}
         {post.thumbnail && (
           <div className="relative w-full h-48 bg-gray-200 dark:bg-gray-700 overflow-hidden">
-            <img
+            <Image
               src={post.thumbnail}
               alt={post.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              priority={false}
             />
           </div>
         )}

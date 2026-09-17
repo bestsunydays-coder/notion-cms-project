@@ -46,19 +46,43 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
   const { category } = await params;
   const decodedCategory = decodeURIComponent(category);
 
+  // 카테고리에 속한 포스트 개수 조회
+  const postsResponse = await getPosts();
+  let postCount = 0;
+
+  if (postsResponse.success && postsResponse.data) {
+    const published = filterPublished(postsResponse.data);
+    postCount = published.filter(p => p.category === decodedCategory).length;
+  }
+
+  const description = `${decodedCategory} 카테고리의 ${postCount}개 여행 가이드와 팁을 확인하세요.`;
+  const categoryUrl = `https://notion-cms.example.com/categories/${category}`;
+
   return {
     title: `${decodedCategory} | Notion 여행 가이드 블로그`,
-    description: `${decodedCategory} 카테고리의 모든 여행 가이드와 팁을 확인하세요.`,
+    description,
+    keywords: [decodedCategory, '여행', '가이드'],
+
+    // Canonical URL
+    alternates: {
+      canonical: categoryUrl,
+    },
+
+    // Open Graph
     openGraph: {
       title: `${decodedCategory} | Notion 여행 가이드 블로그`,
-      description: `${decodedCategory} 카테고리의 모든 여행 가이드와 팁을 확인하세요.`,
+      description,
       type: 'website',
-      url: `https://notion-cms.example.com/categories/${category}`,
+      url: categoryUrl,
+      locale: 'ko_KR',
+      siteName: 'Notion 여행 가이드 블로그',
     },
+
+    // Twitter
     twitter: {
       card: 'summary',
       title: `${decodedCategory} | Notion 여행 가이드 블로그`,
-      description: `${decodedCategory} 카테고리의 모든 여행 가이드와 팁을 확인하세요.`,
+      description,
     },
   };
 }

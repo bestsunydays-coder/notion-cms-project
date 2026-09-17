@@ -5,7 +5,9 @@
 
 import { Suspense } from 'react';
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
+import Script from 'next/script';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { NotionBlocks } from '@/components/NotionBlock';
 import { Badge } from '@/components/ui/badge';
@@ -60,14 +62,29 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
     };
   }
 
+  // 설명을 120-160자로 제한
+  const description = (post.excerpt || '세계 여행 가이드와 여행 팁을 공유하는 블로그입니다.').substring(0, 160);
+  const postUrl = `https://notion-cms.example.com/posts/${post.id}`;
+
   return {
     title: `${post.title} | Notion 여행 가이드 블로그`,
-    description: post.excerpt || '세계 여행 가이드와 여행 팁을 공유하는 블로그입니다.',
+    description,
+    keywords: [...post.tags, post.category],
+    authors: post.author ? [{ name: post.author }] : [],
+
+    // Canonical URL
+    alternates: {
+      canonical: postUrl,
+    },
+
+    // Open Graph
     openGraph: {
       title: post.title,
-      description: post.excerpt || '세계 여행 가이드와 여행 팁을 공유하는 블로그입니다.',
+      description,
       type: 'article',
-      url: `https://notion-cms.example.com/posts/${post.id}`,
+      url: postUrl,
+      siteName: 'Notion 여행 가이드 블로그',
+      locale: 'ko_KR',
       images: post.thumbnail
         ? [
             {
@@ -75,6 +92,7 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
               width: 1200,
               height: 630,
               alt: post.title,
+              type: 'image/jpeg',
             },
           ]
         : [],
@@ -82,10 +100,13 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
       authors: post.author ? [post.author] : [],
       tags: post.tags,
     },
+
+    // Twitter
     twitter: {
       card: 'summary_large_image',
       title: post.title,
-      description: post.excerpt || '세계 여행 가이드와 여행 팁을 공유하는 블로그입니다.',
+      description,
+      creator: post.author,
       images: post.thumbnail ? [post.thumbnail] : [],
     },
   };
@@ -235,8 +256,72 @@ export default async function PostPage({ params }: PostPageProps) {
 
   const formattedDate = post.publishedDate ? formatDateLong(post.publishedDate) : '';
 
+  // JSON-LD 구조화된 데이터
+  const postUrl = `https://notion-cms.example.com/posts/${post.id}`;
+  const articleSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt || '세계 여행 가이드와 여행 팁을 공유하는 블로그입니다.',
+    image: post.thumbnail ? [post.thumbnail] : [],
+    datePublished: post.publishedDate?.toISOString(),
+    author: post.author ? {
+      '@type': 'Person',
+      name: post.author,
+    } : undefined,
+    publisher: {
+      '@type': 'Organization',
+      name: 'Notion 여행 가이드 블로그',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://notion-cms.example.com/logo.png',
+      },
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': postUrl,
+    },
+  };
+
+  // BreadcrumbList 스키마
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: '홈',
+        item: 'https://notion-cms.example.com',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: post.category,
+        item: `https://notion-cms.example.com/?category=${encodeURIComponent(post.category)}`,
+      },
+      {
+        '@type': 'ListItem',
+        position: 3,
+        name: post.title,
+        item: postUrl,
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/50">
+      {/* JSON-LD 구조화된 데이터 */}
+      <Script
+        id="article-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
+      <Script
+        id="breadcrumb-schema"
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       {/* 헤더 */}
       <header className="sticky top-0 z-50 border-b border-border/50 backdrop-blur-sm flex justify-center w-full">
         <nav className="max-w-6xl w-full px-6 py-4 flex justify-between items-center">
@@ -262,10 +347,13 @@ export default async function PostPage({ params }: PostPageProps) {
           {/* 썸네일 */}
           {post.thumbnail && (
             <div className="relative w-full h-96 mb-8 rounded-lg overflow-hidden shadow-lg">
-              <img
+              <Image
                 src={post.thumbnail}
                 alt={post.title}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 90vw, 60vw"
               />
             </div>
           )}
