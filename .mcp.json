@@ -13,6 +13,15 @@
     "context7": {
       "type": "http",
       "url": "https://mcp.context7.com/mcp"
+    },
+    "shrimp-task-manager": {
+      "command": "node",
+      "args": ["/Users/dezuk/workspace/mcp-shrimp-task-manager/dist/index.js"],
+      "env": {
+        "DATA_DIR": "/Users/dezuk/workspace/notion-cms-project/shrimp_data",
+        "TEMPLATES_USE": "en",
+        "ENABLE_GUI": "true"
+      }
     }
   }
 }
