@@ -340,6 +340,40 @@ export async function getTags(): Promise<Tag[]> {
 }
 
 /**
+ * 특정 태그의 포스트 조회
+ * @param tag 태그명
+ * @returns 포스트 배열
+ */
+export async function getPostsByTag(tag: string): Promise<Post[]> {
+  try {
+    // 캐시 확인
+    const cacheKey = getCacheKey('posts_by_tag', { tag });
+    const cached = getFromCache<Post[]>(cacheKey, CACHE_DURATION.POSTS);
+    if (cached) return cached;
+
+    // 모든 포스트 조회
+    const postsResponse = await getPosts();
+
+    if (!postsResponse.success || !postsResponse.data) {
+      return [];
+    }
+
+    // 해당 태그를 가진 포스트만 필터링
+    const posts = postsResponse.data.filter((post) =>
+      post.tags.some((t) => t.toLowerCase() === tag.toLowerCase()),
+    );
+
+    // 캐시 저장
+    setToCache(cacheKey, posts);
+
+    return posts;
+  } catch (error) {
+    console.error(`태그별 포스트 조회 오류: ${tag}`, error);
+    return [];
+  }
+}
+
+/**
  * Notion 필터 조건 생성
  * @param filterOptions 필터 옵션
  * @returns Notion 필터 객체
