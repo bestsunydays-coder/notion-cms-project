@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AccessibilityProvider } from "@/components/AccessibilityProvider";
 import "./globals.css";
+import "@/styles/accessibility.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -90,9 +92,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <link rel="alternate" hrefLang="ko" href="https://notion-cms.example.com" />
       </head>
       <body className="min-h-screen bg-background text-foreground">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          {children}
-        </ThemeProvider>
+        <AccessibilityProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
+          </ThemeProvider>
+        </AccessibilityProvider>
       </body>
     </html>
   );

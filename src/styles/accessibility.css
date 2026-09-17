@@ -1,0 +1,196 @@
+/**
+ * 접근성 스타일시트
+ * 스크린 리더와 접근성을 위한 스타일을 정의합니다.
+ */
+
+/* 스크린 리더 전용 텍스트 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* 포커스 스타일 향상 */
+:focus {
+  outline: 2px solid var(--primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* 버튼과 링크의 포커스 스타일 */
+button:focus,
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--primary, #3b82f6);
+  outline-offset: 2px;
+}
+
+/* 다크 모드에서의 포커스 스타일 */
+@media (prefers-color-scheme: dark) {
+  :focus {
+    outline-color: var(--primary, #60a5fa);
+  }
+
+  button:focus,
+  a:focus,
+  input:focus,
+  select:focus,
+  textarea:focus {
+    outline-color: var(--primary, #60a5fa);
+  }
+}
+
+/* 고대비 모드 지원 */
+@media (prefers-contrast: more) {
+  :root {
+    --text-color: #000;
+    --bg-color: #fff;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --text-color: #fff;
+      --bg-color: #000;
+    }
+  }
+}
+
+/* 애니메이션 감소 모드 존중 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 스킵 링크 스타일 */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--primary, #3b82f6);
+  color: white;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* 인쇄 스타일 */
+@media print {
+  /* 배경색 제거 */
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  /* 텍스트 색 검정색으로 */
+  body {
+    color: #000;
+    background: #fff;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* 링크 URL 표시 */
+  a::after {
+    content: ' (' attr(href) ')';
+    word-break: break-word;
+  }
+
+  /* 이미지 보존 */
+  img {
+    max-width: 100%;
+  }
+
+  /* 불필요한 요소 숨김 */
+  header,
+  footer,
+  nav,
+  aside,
+  .sidebar,
+  .comment,
+  .ads {
+    display: none !important;
+  }
+
+  /* 페이지 전체 너비 */
+  main {
+    width: 100%;
+  }
+
+  /* 페이지 나누기 설정 */
+  article {
+    page-break-inside: avoid;
+  }
+
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+}
+
+/* 글자 크기 조절을 위한 CSS 변수 */
+:root {
+  --font-size-multiplier: 1;
+
+  --font-size-xs: calc(0.75rem * var(--font-size-multiplier));
+  --font-size-sm: calc(0.875rem * var(--font-size-multiplier));
+  --font-size-base: calc(1rem * var(--font-size-multiplier));
+  --font-size-lg: calc(1.125rem * var(--font-size-multiplier));
+  --font-size-xl: calc(1.25rem * var(--font-size-multiplier));
+  --font-size-2xl: calc(1.5rem * var(--font-size-multiplier));
+  --font-size-3xl: calc(1.875rem * var(--font-size-multiplier));
+  --font-size-4xl: calc(2.25rem * var(--font-size-multiplier));
+  --font-size-5xl: calc(3rem * var(--font-size-multiplier));
+}
+
+/* 글자 크기 125% */
+:root[data-font-size='125'] {
+  --font-size-multiplier: 1.25;
+}
+
+/* 글자 크기 150% */
+:root[data-font-size='150'] {
+  --font-size-multiplier: 1.5;
+}
+
+/* 고대비 모드 */
+:root[data-high-contrast='true'] {
+  --foreground: #000;
+  --background: #fff;
+  --border: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root[data-high-contrast='true'] {
+    --foreground: #fff;
+    --background: #000;
+    --border: #fff;
+  }
+}
