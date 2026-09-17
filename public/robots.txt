@@ -1,0 +1,16 @@
+# robots.txt for Notion 여행 가이드 블로그
+# Search engine crawlers 허용
+
+# 모든 봇에 대한 규칙
+User-agent: *
+Allow: /
+
+# Sitemap 위치
+Sitemap: https://notion-cms.example.com/sitemap.xml
+
+# 크롤링 딜레이 (선택사항)
+Crawl-delay: 1
+
+# 특정 봇 제외 (필요시)
+# User-agent: BadBot
+# Disallow: /
