@@ -11,6 +11,7 @@ import SearchBar from '@/components/SearchBar';
 import PostCard from '@/components/PostCard';
 import Pagination from '@/components/Pagination';
 import SkeletonCard from '@/components/SkeletonCard';
+import Sidebar from '@/components/Sidebar';
 import { getPosts, getCategories } from '@/lib/notion';
 import { filterPublished, sortPosts, paginatePosts, calculateTotalPages } from '@/lib/utils/filter';
 import { Badge } from '@/components/ui/badge';
@@ -187,31 +188,37 @@ export default async function Home({ searchParams }: HomePageProps) {
         </nav>
       </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-12">
-        {/* 히어로 섹션 */}
-        <section className="mb-12 space-y-6">
-          <div className="space-y-4">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-              세계 여행 가이드
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl">
-              전 세계의 아름다운 여행지를 소개하고, 현지 문화와 여행 팁을 공유합니다.
-            </p>
-          </div>
+      <main className="max-w-7xl mx-auto px-6 py-12 flex gap-8">
+        {/* 메인 콘텐츠 */}
+        <div className="flex-1">
+          {/* 히어로 섹션 */}
+          <section className="mb-12 space-y-6">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                세계 여행 가이드
+              </h1>
+              <p className="text-lg text-muted-foreground max-w-2xl">
+                전 세계의 아름다운 여행지를 소개하고, 현지 문화와 여행 팁을 공유합니다.
+              </p>
+            </div>
 
-          {/* 검색 바 */}
-          <SearchBar />
-        </section>
+            {/* 검색 바 */}
+            <SearchBar />
+          </section>
 
-        {/* 카테고리 필터 */}
-        <Suspense fallback={null}>
-          <CategoryFilter selectedCategory={selectedCategory} />
-        </Suspense>
+          {/* 카테고리 필터 */}
+          <Suspense fallback={null}>
+            <CategoryFilter selectedCategory={selectedCategory} />
+          </Suspense>
 
-        {/* 포스트 목록 */}
-        <Suspense fallback={<PostsLoading />}>
-          <PostsList currentPage={currentPage} selectedCategory={selectedCategory} />
-        </Suspense>
+          {/* 포스트 목록 */}
+          <Suspense fallback={<PostsLoading />}>
+            <PostsList currentPage={currentPage} selectedCategory={selectedCategory} />
+          </Suspense>
+        </div>
+
+        {/* 사이드바 */}
+        <Sidebar />
       </main>
 
       {/* 푸터 */}
