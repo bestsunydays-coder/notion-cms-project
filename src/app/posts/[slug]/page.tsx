@@ -14,6 +14,7 @@ import PostCard from '@/components/PostCard';
 import { getPosts, getPostById } from '@/lib/notion';
 import { formatDateLong } from '@/lib/utils/date';
 import { filterPublished, sortPosts } from '@/lib/utils/filter';
+import { getRelatedPosts } from '@/lib/utils/recommendation';
 import { ArrowLeft, Calendar, User } from 'lucide-react';
 
 // ISR 캐싱 (1시간마다 재검증)
@@ -92,24 +93,20 @@ export async function generateMetadata({ params }: PostPageProps): Promise<Metad
 
 /**
  * 관련 포스트를 표시하는 컴포넌트
+ * 추천 알고리즘을 사용하여 가장 관련성 높은 포스트들을 찾습니다.
  */
-async function RelatedPosts({ category, currentPostId }: { category: string; currentPostId: string }) {
-  // 같은 카테고리의 포스트 조회
+async function RelatedPosts({ currentPost }: { currentPost: any }) {
+  // 모든 포스트 조회
   const postsResponse = await getPosts();
 
   if (!postsResponse.success || !postsResponse.data) {
     return null;
   }
 
-  // 발행된 포스트 중 같은 카테고리이고 현재 포스트가 아닌 것만 필터링
-  let related = filterPublished(postsResponse.data)
-    .filter((post) => post.category === category && post.id !== currentPostId)
-    .slice(0, 3);
+  // 추천 알고리즘으로 관련 포스트 조회 (최대 6개)
+  const relatedPosts = getRelatedPosts(currentPost, postsResponse.data, 6);
 
-  // 최신 순으로 정렬
-  related = sortPosts(related, 'date-desc');
-
-  if (related.length === 0) {
+  if (relatedPosts.length === 0) {
     return null;
   }
 
@@ -118,8 +115,8 @@ async function RelatedPosts({ category, currentPostId }: { category: string; cur
       <h2 className="text-3xl font-bold mb-8 text-gray-900 dark:text-gray-50">
         관련 포스트
       </h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {related.map((post) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {relatedPosts.map((post) => (
           <PostCard key={post.id} post={post} />
         ))}
       </div>
@@ -336,7 +333,7 @@ export default async function PostPage({ params }: PostPageProps) {
 
         {/* 관련 포스트 */}
         <Suspense fallback={null}>
-          <RelatedPosts category={post.category} currentPostId={post.id} />
+          <RelatedPosts currentPost={post} />
         </Suspense>
       </main>
 
