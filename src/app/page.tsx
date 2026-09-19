@@ -12,6 +12,7 @@ import PostCard from '@/components/PostCard';
 import Pagination from '@/components/Pagination';
 import SkeletonCard from '@/components/SkeletonCard';
 import Sidebar from '@/components/Sidebar';
+import DailyVisitorCount from '@/components/DailyVisitorCount';
 import { getPosts, getCategories } from '@/lib/notion';
 import { filterPublished, sortPosts, paginatePosts, calculateTotalPages } from '@/lib/utils/filter';
 import { Badge } from '@/components/ui/badge';
@@ -194,12 +195,17 @@ export default async function Home({ searchParams }: HomePageProps) {
           {/* 히어로 섹션 */}
           <section className="mb-12 space-y-6">
             <div className="space-y-4">
-              <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-                세계 여행 가이드
-              </h1>
+              <div className="flex items-center gap-3">
+                <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
+                  세계 여행 가이드
+                </h1>
+              </div>
               <p className="text-lg text-muted-foreground max-w-2xl">
                 전 세계의 아름다운 여행지를 소개하고, 현지 문화와 여행 팁을 공유합니다.
               </p>
+              <div className="pt-2">
+                <DailyVisitorCount />
+              </div>
             </div>
 
             {/* 검색 바 */}
