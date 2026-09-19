@@ -14,13 +14,22 @@ import type {
   PaginationOptions,
 } from './types';
 
+// Notion API 키 및 데이터베이스 ID 검증
+const NOTION_API_KEY = process.env.NOTION_API_KEY;
+const DATABASE_ID = process.env.NOTION_DATABASE_ID || '';
+
+if (!NOTION_API_KEY) {
+  console.warn('경고: NOTION_API_KEY 환경 변수가 설정되지 않았습니다.');
+}
+
+if (!DATABASE_ID) {
+  console.warn('경고: NOTION_DATABASE_ID 환경 변수가 설정되지 않았습니다.');
+}
+
 // Notion 클라이언트 초기화
 const notionClient = new Client({
-  auth: process.env.NOTION_API_KEY,
+  auth: NOTION_API_KEY,
 });
-
-// 데이터베이스 ID
-const DATABASE_ID = process.env.NOTION_DATABASE_ID || '';
 
 // 캐시 저장소 (메모리 기반)
 const cacheStore = new Map<string, { data: unknown; timestamp: number }>();
@@ -184,23 +193,29 @@ export async function getPosts(
     }
 
     // Notion 데이터베이스 쿼리
-    const queryParams: {
-      database_id: string;
-      filter?: Record<string, unknown>;
-      page_size?: number;
-    } = {
-      database_id: DATABASE_ID,
+    const filter = buildNotionFilter(filterOptions);
+
+    const requestBody: Record<string, unknown> = {
       page_size: paginationOptions?.pageSize || 10,
     };
 
-    const filter = buildNotionFilter(filterOptions);
     if (filter) {
-      queryParams.filter = filter;
+      requestBody.filter = filter;
     }
 
-    // 타입 단언을 사용하여 query 메서드 호출
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = await (notionClient.databases as any).query(queryParams);
+    // Notion API REST 호출
+    const response = await fetch(
+      `https://api.notion.com/v1/databases/${DATABASE_ID}/query`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${NOTION_API_KEY}`,
+          'Notion-Version': '2022-06-28',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      }
+    ).then((res) => res.json());
 
     // 포스트 배열로 변환
     const posts: Post[] = [];
